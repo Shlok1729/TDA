@@ -282,7 +282,11 @@ if data_source == "Crypto: Bitcoin (2021 Flash Crash Study)":
     fig_lead = go.Figure()
     
     # Extract dates and indices for annotations
-    test_dates = df['date'][train_size:].values
+    if 'date' in df.columns:
+        test_dates = df['date'][train_size:].values
+    else:
+        st.warning("⚠️ Real financial data could not be fetched (likely due to cloud server rate-limiting). Using synthetic fallback data.")
+        test_dates = np.arange(len(y_test))
     # Identify the major peak in May
     warning_idx_1 = 15 # Approx April 10
     warning_idx_2 = 45 # Approx May 12
@@ -381,7 +385,11 @@ if data_source == "History: COVID-19 'Black Swan' (S&P 500, 2020)":
     
     # Create Lead-Time Chart
     fig_covid = go.Figure()
-    test_dates = df['date'][train_size:].values
+    if 'date' in df.columns:
+        test_dates = df['date'][train_size:].values
+    else:
+        st.warning("⚠️ Real financial data could not be fetched (likely due to cloud server rate-limiting). Using synthetic fallback data.")
+        test_dates = np.arange(len(y_test))
     
     # S&P 500 Price
     fig_covid.add_trace(go.Scatter(x=test_dates, y=y_test, name='S&P 500 Price', line=dict(color='white', width=3)))
