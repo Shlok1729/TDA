@@ -62,6 +62,13 @@ def get_data(noise, source, extra_flag=False, _version=6):
 with st.spinner("Fetching/Generating Data..."):
     df = get_data(noise_level, data_source, arrhythmic_mode, _version=6)
 
+# Detect if yfinance failed and returned synthetic fallback (which lacks 'date')
+if data_source not in ["Synthetic (Controlled Noise)", "Medical Diagnostics: ECG (Heart Rhythm)", "IoT: Predictive Maintenance (Bearing Failure Study)"]:
+    if 'date' not in df.columns:
+        st.error("🚨 **Yahoo Finance API blocked the request from this cloud server.** The app has automatically fallen back to the 'Synthetic (Controlled Noise)' dataset to prevent a crash.")
+        data_source = "Synthetic (Controlled Noise)"
+
+
 if data_source == "Real-World Finance (Volatility Index VIX)":
     st.info("💡 **Pitch to Judges:** The VIX (Volatility Index) is notoriously noisy, chaotic, and non-stationary. Traditional models often fit to the noise rather than the underlying structure of market fear. By using **Topological Data Analysis (TDA)**, we extract persistence features that capture the 'shape' of local volatility and structural shifts (like sudden market shocks). This allows our model to remain robust and find fundamental signals hidden within the financial chaos.", icon="📈")
 elif data_source == "Multivariate Market System (VIX + S&P 500)":
